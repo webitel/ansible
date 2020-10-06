@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  any_errors_fatal: true
+  ignore_unreachable: yes
+  become: true
+  become_user: root
+  tasks:
+    - include: tasks/debian.yml
+    - include: tasks/setup.yml
+    - include: tasks/consul.yml

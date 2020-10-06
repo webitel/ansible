@@ -1,0 +1,5 @@
+- name: Check Debian 10 system
+  debug:
+    msg: "{{ hostvars[inventory_hostname].ansible_distribution }} {{ hostvars[inventory_hostname].ansible_distribution_release }} {{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
+- command: "true"
+  failed_when: (ansible_facts['distribution'] != "Debian" or ansible_facts['distribution_major_version'] != "10")

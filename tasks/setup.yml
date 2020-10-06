@@ -1,0 +1,21 @@
+---
+# Common roles for all hosts
+
+- name: 'Updates apt cache & upgrades dist'
+  apt:
+    upgrade: 'yes'
+    update_cache: 'yes'
+  when: ansible_distribution == 'Debian'
+
+- name: 'Install all necessary software with APT'
+  apt:
+    name: '{{ software }}'
+    state: latest
+  when: ansible_distribution == 'Debian'
+
+- locale_gen:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - '{{ locales_gen }}'
+  when: ansible_distribution == 'Debian'

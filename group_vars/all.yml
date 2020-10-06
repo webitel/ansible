@@ -1,0 +1,18 @@
+---
+# Consul
+consul_mode: single
+consul_systemd_restart_sec: 30
+consul_systemd_limit_nofile: 65536
+
+# Generate additional locales
+locales_gen:
+  - "uk_UA.UTF-8"
+  - "en_US.UTF-8"
+
+# Software list
+software:
+  - curl
+  - wget
+  - unzip
+  - locales
+  - dnsutils
