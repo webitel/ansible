@@ -14,5 +14,6 @@ software:
   - curl
   - wget
   - unzip
+  - gnupg
   - locales
   - dnsutils

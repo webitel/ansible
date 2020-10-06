@@ -9,3 +9,4 @@
     - include: tasks/debian.yml
     - include: tasks/setup.yml
     - include: tasks/consul.yml
+    - include: tasks/rabbitmq.yml

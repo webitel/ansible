@@ -1,0 +1,81 @@
+---
+- name: Add rabbitmq apt-key
+  apt_key:
+    url: https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+    state: present
+
+- name: Add rabbitmq repository into sources list
+  apt_repository:
+    repo:  deb https://dl.bintray.com/rabbitmq/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    state: present
+    filename: rabbitmq
+
+- name: Add rabbitmq-erlang repository into sources list
+  apt_repository:
+    repo: deb https://dl.bintray.com/rabbitmq-erlang/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} erlang
+    state: present
+    filename: rabbitmq-erlang
+
+- name: Update repositories cache and install "rabbitmq-server" package
+  apt:
+    name: rabbitmq-server
+    update_cache: yes
+
+- name: get rabbitmq version
+  command: rabbitmqctl version
+  register: rabbitmq_version
+
+- name: Download "rabbitmq_delayed_message_exchange"
+  get_url:
+    url: https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.8.0/rabbitmq_delayed_message_exchange-3.8.0.ez
+    dest: /usr/lib/rabbitmq/lib/rabbitmq_server-{{rabbitmq_version.stdout}}/plugins/rabbitmq_delayed_message_exchange-3.8.0.ez
+
+- name: Create rabbitmq-service directory
+  file:
+    dest: /etc/systemd/system/rabbitmq-server.service.d
+    state: directory
+
+- name: Add rabbitmq limits
+  template:
+    src: "templates/rabbitmq_systemd.limits.conf"
+    dest: "/etc/systemd/system/rabbitmq-server.service.d/limits.conf"
+
+- name: Download "rabbitmq plugins"
+  get_url:
+    url: https://git.webitel.com/projects/WEP/repos/rabbitmq/raw/enabled_plugins
+    dest: /etc/rabbitmq/enabled_plugins
+
+- name: Download "rabbitmq config"
+  get_url:
+    url: https://git.webitel.com/projects/WEP/repos/rabbitmq/raw/rabbitmq.conf
+    dest: /etc/rabbitmq/rabbitmq.conf
+
+- name: Enable rabbitmq at startup (systemd)
+  systemd:
+    name: rabbitmq-server
+    enabled: yes
+  when:
+    - ansible_service_mgr == "systemd"
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+  notify: restart rabbitmq-server
+  when: systemd_unit is changed
+
+- name: rabbitmq add user webitel
+  community.rabbitmq.rabbitmq_user:
+    user: webitel
+    password: webitel
+    tags: administrator
+    permissions:
+      - vhost: /
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+    state: present
+
+- name: rabbitmq delete user guest
+  community.rabbitmq.rabbitmq_user:
+    user: guest
+    state: absent
