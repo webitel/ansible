@@ -55,22 +55,16 @@
   become: true
   become_user: postgres
 
-- name: Download "webitel-db-schema"
+- name: Download "webitel" files
   get_url:
-    url: https://git.webitel.com/projects/WEP/repos/postgres/raw/webitel-db-schema.sql
-    dest: /tmp/webitel-db-schema.sql
+    url: https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}.sql
+    dest: /tmp/{{ item }}
     mode: 0777
   become: true
   become_user: postgres
-  when: create_db is changed
-
-- name: Download "webitel-db-data"
-  get_url:
-    url: https://git.webitel.com/projects/WEP/repos/postgres/raw/webitel-db-data.sql
-    dest: /tmp/webitel-db-data.sql
-    mode: 0777
-  become: true
-  become_user: postgres
+  with_items:
+    - webitel-db-schema.sql
+    - webitel-db-data.sql
   when: create_db is changed
 
 - name: Restore schema for "webitel" from the file
