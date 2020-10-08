@@ -1,0 +1,104 @@
+---
+- name: Add PostgreSQL apt-key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Add PostgreSQL repository into sources list
+  apt_repository:
+    repo:  deb http://apt.postgresql.org/pub/repos/apt/ {{ hostvars[inventory_hostname].ansible_distribution_release }}-pgdg main
+    state: present
+    filename: postgresql
+
+- name: Update repositories cache and install "postgresql-12" package
+  apt:
+    name: postgresql-12
+    update_cache: yes
+
+- name: get PostgreSQL version
+  shell: psql --version | cut -f 3 -d " "
+  register: psql_version
+
+- name: Download & install webitel extension for PostgreSQL
+  unarchive:
+    src: https://releases.webitel.com/libs/wbt_cc_PSQL-{{ psql_version.stdout }}-{{ hostvars[inventory_hostname].ansible_distribution | lower }}_amd64.tgz
+    dest: /
+    remote_src: yes
+  register: systemd_unit
+
+- name: Enable PostgreSQL at startup (systemd)
+  systemd:
+    name: postgresql
+    enabled: yes
+  when:
+    - ansible_service_mgr == "systemd"
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+  notify: restart postgresql
+  when: systemd_unit is changed
+
+- name: Create "opensips" user, set MD5-hashed password, grant privs
+  postgresql_user:
+    name: opensips
+    password: md543cdef5b53306daa2f2b086c1b55e0a6
+    role_attr_flags: SUPERUSER
+  become: true
+  become_user: postgres
+
+- name: Create a new database with name "webitel"
+  postgresql_db:
+    name: webitel
+    owner: opensips
+  register: create_db
+  become: true
+  become_user: postgres
+
+- name: Download "webitel-db-schema"
+  get_url:
+    url: https://git.webitel.com/projects/WEP/repos/postgres/raw/webitel-db-schema.sql
+    dest: /tmp/webitel-db-schema.sql
+    mode: 0777
+  become: true
+  become_user: postgres
+  when: create_db is changed
+
+- name: Download "webitel-db-data"
+  get_url:
+    url: https://git.webitel.com/projects/WEP/repos/postgres/raw/webitel-db-data.sql
+    dest: /tmp/webitel-db-data.sql
+    mode: 0777
+  become: true
+  become_user: postgres
+  when: create_db is changed
+
+- name: Restore schema "webitel" from the file
+  postgresql_db:
+    name: webitel
+    owner: opensips
+    state: restore
+    target: /tmp/webitel-db-schema.sql
+  become: true
+  become_user: postgres
+  when: create_db is changed
+
+- name: Restore data "webitel" from the file
+  postgresql_db:
+    name: webitel
+    owner: opensips
+    state: restore
+    target: /tmp/webitel-db-data.sql
+  become: true
+  become_user: postgres
+  when: create_db is changed
+
+- name: Delete downloaded files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /tmp/webitel-db-schema.sql
+    - /tmp/webitel-db-data.sql
+  when: create_db is changed
+

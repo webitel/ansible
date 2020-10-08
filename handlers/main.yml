@@ -1,3 +1,4 @@
 - name: restart
   import_tasks: restart_consul.yml
   import_tasks: restart_rabbitmq-server.yml
+  import_tasks: restart_postgresql.yml

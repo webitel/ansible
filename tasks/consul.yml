@@ -15,13 +15,11 @@
     name: consul
     update_cache: yes
 
-# Add group
 - name: Add Consul group
   group:
     name: consul
     state: present
 
-# Add user
 - name: Add Consul user
   user:
     name: consul

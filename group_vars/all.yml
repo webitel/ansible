@@ -6,14 +6,15 @@ consul_systemd_limit_nofile: 65536
 
 # Generate additional locales
 locales_gen:
-  - "uk_UA.UTF-8"
   - "en_US.UTF-8"
 
 # Software list
 software:
+  - acl
   - curl
   - wget
   - unzip
   - gnupg
   - locales
   - dnsutils
+  - python3-psycopg2

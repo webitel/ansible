@@ -34,6 +34,7 @@
   file:
     dest: /etc/systemd/system/rabbitmq-server.service.d
     state: directory
+  register: systemd_unit
 
 - name: Add rabbitmq limits
   template:
@@ -64,7 +65,7 @@
   when: systemd_unit is changed
 
 - name: rabbitmq add user webitel
-  community.rabbitmq.rabbitmq_user:
+  rabbitmq_user:
     user: webitel
     password: webitel
     tags: administrator
@@ -76,6 +77,6 @@
     state: present
 
 - name: rabbitmq delete user guest
-  community.rabbitmq.rabbitmq_user:
+  rabbitmq_user:
     user: guest
     state: absent
