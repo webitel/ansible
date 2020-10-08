@@ -44,7 +44,6 @@
     name: opensips
     password: md543cdef5b53306daa2f2b086c1b55e0a6
     role_attr_flags: SUPERUSER
-  become: true
   become_user: postgres
 
 - name: Create a new database with name "webitel"
@@ -52,7 +51,6 @@
     name: webitel
     owner: opensips
   register: create_db
-  become: true
   become_user: postgres
 
 - name: Download "webitel" files
@@ -60,7 +58,6 @@
     url: https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}.sql
     dest: /tmp/{{ item }}
     mode: 0777
-  become: true
   become_user: postgres
   with_items:
     - webitel-db-schema.sql
@@ -73,7 +70,6 @@
     owner: opensips
     state: restore
     target: /tmp/webitel-db-schema.sql
-  become: true
   become_user: postgres
   when: create_db is changed
 
@@ -83,7 +79,6 @@
     owner: opensips
     state: restore
     target: /tmp/webitel-db-data.sql
-  become: true
   become_user: postgres
   when: create_db is changed
 
