@@ -55,7 +55,7 @@
 
 - name: Download "webitel" files
   get_url:
-    url: https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}.sql
+    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}"
     dest: /tmp/{{ item }}
     mode: 0777
   become_user: postgres
@@ -64,21 +64,15 @@
     - webitel-db-data.sql
   when: create_db is changed
 
-- name: Restore schema for "webitel" from the file
+- name: Restore database "webitel" from the file
   postgresql_db:
     name: webitel
     owner: opensips
     state: restore
-    target: /tmp/webitel-db-schema.sql
-  become_user: postgres
-  when: create_db is changed
-
-- name: Restore data for "webitel" from the file
-  postgresql_db:
-    name: webitel
-    owner: opensips
-    state: restore
-    target: /tmp/webitel-db-data.sql
+    target: "{{ item }}"
+  with_items:
+    - /tmp/webitel-db-schema.sql
+    - /tmp/webitel-db-data.sql
   become_user: postgres
   when: create_db is changed
 
@@ -90,4 +84,3 @@
     - /tmp/webitel-db-schema.sql
     - /tmp/webitel-db-data.sql
   when: create_db is changed
-
