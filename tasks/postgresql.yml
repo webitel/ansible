@@ -73,7 +73,7 @@
   become_user: postgres
   when: create_db is changed
 
-- name: Restore schema "webitel" from the file
+- name: Restore schema for "webitel" from the file
   postgresql_db:
     name: webitel
     owner: opensips
@@ -83,7 +83,7 @@
   become_user: postgres
   when: create_db is changed
 
-- name: Restore data "webitel" from the file
+- name: Restore data for "webitel" from the file
   postgresql_db:
     name: webitel
     owner: opensips

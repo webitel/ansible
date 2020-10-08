@@ -1,5 +1,3 @@
 # Ansible playbook for webitel
 
-## install roles
-
-    ansible-galaxy collection install -r requirements.yml
+    ansible-playbook -i hosts/example playbook.yml
