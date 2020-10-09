@@ -4,6 +4,9 @@ consul_mode: single
 consul_systemd_restart_sec: 30
 consul_systemd_limit_nofile: 65536
 
+# OpenSIPS
+opensips_fail2ban: false
+
 # Generate additional locales
 locales_gen:
   - "en_US.UTF-8"
@@ -51,3 +54,15 @@ freeswitch:
   - freeswitch-music-default
   - freeswitch-mod-json-cdr
   - freeswitch-systemd
+
+opensips:
+  - opensips
+  - opensips-cli
+  - opensips-http-modules
+  - opensips-postgres-module
+  - opensips-presence-modules
+  - opensips-rabbitmq-modules
+  - opensips-wss-module
+  - opensips-tls-module
+  - opensips-tlsmgm-module
+  - opensips-xmlrpc-module

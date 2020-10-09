@@ -13,6 +13,7 @@
     - include: tasks/postgresql.yml
     - include: tasks/freeswitch.yml
     - include: tasks/rtpengine.yml
+    - include: tasks/opensips.yml
 
   handlers:
     - include: handlers/main.yml
