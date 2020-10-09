@@ -1,0 +1,69 @@
+---
+- name: Add FreeSWITCH apt-key
+  apt_key:
+    url: https://files.freeswitch.org/repo/deb/debian-release/fsstretch-archive-keyring.asc
+    state: present
+
+- name: Add FreeSWITCH repository into sources list
+  apt_repository:
+    repo:  deb http://files.freeswitch.org/repo/deb/debian-release/ {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    state: present
+    filename: freeswitch
+
+- name: Update repositories cache and install FreeSWITCH packages
+  apt:
+    name: '{{ freeswitch }}'
+    state: latest
+    install_recommends: no
+    update_cache: yes
+
+- name: Read bootstrapped state
+  stat:
+    path: /etc/freeswitch/.bootstrap
+  register: bootstrap_state
+  ignore_errors: true
+  tags: always
+
+- name: Install Webitel modules for FreeSWITCH
+  unarchive:
+    src: "https://releases.webitel.com/libs/{{ item }}"
+    dest: /usr/lib/freeswitch/mod/
+    remote_src: yes
+  notify: restart FreeSWITCH
+  with_items:
+    - mod_grpc-FS-1.10.3-release.zip
+    - mod_amd-amqp-FS-1.10-release.zip
+
+- name: Download FreeSWITCH configure
+  get_url:
+    url: "https://git.webitel.com/projects/WEP/repos/freeswitch/raw/{{ item }}"
+    dest: "/etc/freeswitch/{{ item }}"
+  with_items:
+    - mime.types
+    - configuration.xml
+    - freeswitch.xml
+    - vars.xml
+  when: not bootstrap_state.stat.exists
+
+- name: Change outbound SIP Proxy IP
+  replace:
+    path: /etc/freeswitch/vars.xml
+    after: '<X-PRE-PROCESS cmd="set" data="outbound_sip_proxy='
+    before: '"/>'
+    regexp: '^(.+)$'
+    replace: '{{ hostvars[inventory_hostname]["ansible_default_ipv4"]["address"] }}'
+  when: not bootstrap_state.stat.exists
+
+- name: Enable Freeswitch at startup (systemd)
+  systemd:
+    name: freeswitch
+    enabled: yes
+  when:
+    - ansible_service_mgr == "systemd"
+
+- name: Create bootstrapped state file
+  file:
+    dest: /etc/freeswitch/.bootstrap
+    state: touch
+  notify: restart FreeSWITCH
+  when: not bootstrap_state.stat.exists

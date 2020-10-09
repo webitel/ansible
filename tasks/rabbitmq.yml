@@ -25,10 +25,18 @@
   command: rabbitmqctl version
   register: rabbitmq_version
 
+- name: Read bootstrapped state
+  stat:
+    path: /etc/rabbitmq/.bootstrap
+  register: bootstrap_state
+  ignore_errors: true
+  tags: always
+
 - name: Download "rabbitmq_delayed_message_exchange"
   get_url:
     url: https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.8.0/rabbitmq_delayed_message_exchange-3.8.0.ez
     dest: /usr/lib/rabbitmq/lib/rabbitmq_server-{{rabbitmq_version.stdout}}/plugins/rabbitmq_delayed_message_exchange-3.8.0.ez
+  notify: restart rabbitmq-server
 
 - name: Create rabbitmq-service directory
   file:
@@ -40,16 +48,19 @@
   template:
     src: "templates/rabbitmq_systemd.limits.conf"
     dest: "/etc/systemd/system/rabbitmq-server.service.d/limits.conf"
+  notify: restart rabbitmq-server
 
 - name: Download "rabbitmq plugins"
   get_url:
     url: https://git.webitel.com/projects/WEP/repos/rabbitmq/raw/enabled_plugins
     dest: /etc/rabbitmq/enabled_plugins
+  when: not bootstrap_state.stat.exists
 
 - name: Download "rabbitmq config"
   get_url:
     url: https://git.webitel.com/projects/WEP/repos/rabbitmq/raw/rabbitmq.conf
     dest: /etc/rabbitmq/rabbitmq.conf
+  when: not bootstrap_state.stat.exists
 
 - name: Enable rabbitmq at startup (systemd)
   systemd:
@@ -80,3 +91,10 @@
   rabbitmq_user:
     user: guest
     state: absent
+
+- name: Create bootstrapped state file
+  file:
+    dest: /etc/rabbitmq/.bootstrap
+    state: touch
+  notify: restart rabbitmq-server
+  when: not bootstrap_state.stat.exists

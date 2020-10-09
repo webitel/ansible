@@ -1,6 +1,0 @@
----
-- name: restart PostgreSQL on Linux
-  service:
-    name: postgresql
-    state: restarted
-  listen: 'restart postgresql'

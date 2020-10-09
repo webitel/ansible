@@ -1,0 +1,25 @@
+---
+- name: restart consul on Linux
+  service:
+    name: consul
+    state: restarted
+  listen: 'restart consul'
+
+- name: restart FreeSWITCH on Linux
+  service:
+    name: freeswitch
+    state: restarted
+  listen: 'restart FreeSWITCH'
+
+- name: restart PostgreSQL on Linux
+  service:
+    name: postgresql
+    state: restarted
+  listen: 'restart postgresql'
+
+- name: restart rabbitmq-server on Linux
+  service:
+    name: rabbitmq-server
+    state: restarted
+  notify: restart FreeSWITCH
+  listen: 'restart rabbitmq-server'

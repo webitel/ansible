@@ -11,3 +11,7 @@
     - include: tasks/consul.yml
     - include: tasks/rabbitmq.yml
     - include: tasks/postgresql.yml
+    - include: tasks/freeswitch.yml
+
+  handlers:
+    - include: handlers/main.yml
