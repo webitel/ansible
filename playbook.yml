@@ -12,6 +12,7 @@
     - include: tasks/rabbitmq.yml
     - include: tasks/postgresql.yml
     - include: tasks/freeswitch.yml
+    - include: tasks/rtpengine.yml
 
   handlers:
     - include: handlers/main.yml

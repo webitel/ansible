@@ -15,6 +15,7 @@
   service:
     name: postgresql
     state: restarted
+  notify: restart FreeSWITCH
   listen: 'restart postgresql'
 
 - name: restart rabbitmq-server on Linux
@@ -23,3 +24,9 @@
     state: restarted
   notify: restart FreeSWITCH
   listen: 'restart rabbitmq-server'
+
+- name: restart ngcp-rtpengine-daemon on Linux
+  service:
+    name: ngcp-rtpengine-daemon
+    state: restarted
+  listen: 'restart rtpengine'
