@@ -75,22 +75,21 @@
   notify: restart rabbitmq-server
   when: systemd_unit is changed
 
-- name: rabbitmq add user webitel
-  rabbitmq_user:
-    user: webitel
-    password: webitel
-    tags: administrator
-    permissions:
-      - vhost: /
-        configure_priv: .*
-        read_priv: .*
-        write_priv: .*
-    state: present
+- name: add webitel user
+  command: rabbitmqctl add_user webitel webitel
+  when: not bootstrap_state.stat.exists
 
-- name: rabbitmq delete user guest
-  rabbitmq_user:
-    user: guest
-    state: absent
+- name: become an administrator
+  command: rabbitmqctl set_user_tags webitel administrator
+  when: not bootstrap_state.stat.exists
+
+- name: set permissions for webitel user
+  command: rabbitmqctl set_permissions -p / webitel ".*" ".*" ".*"
+  when: not bootstrap_state.stat.exists
+
+- name: delete guest user
+  command: rabbitmqctl delete_user guest
+  when: not bootstrap_state.stat.exists
 
 - name: Create bootstrapped state file
   file:

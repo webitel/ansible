@@ -1,5 +1,5 @@
 [main]
-cloud.webitel.ua
+1.1.1.1 ansible_ssh_user=srvadm ansible_ssh_port=45793
 
 [all:children]
 main
