@@ -14,6 +14,7 @@ locales_gen:
 # Software lists
 software:
   - acl
+  - git
   - curl
   - wget
   - unzip

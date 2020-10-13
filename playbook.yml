@@ -14,6 +14,7 @@
     - include: tasks/freeswitch.yml
     - include: tasks/rtpengine.yml
     - include: tasks/opensips.yml
+    - include: tasks/webitel.yml
 
   handlers:
     - include: handlers/main.yml

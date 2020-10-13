@@ -50,3 +50,13 @@
   service:
     name: fail2ban
     state: restarted
+
+- name: restart webitel
+  service:
+    name: '{{ item }}'
+    state: restarted
+  with_items:
+    - webitel-api.service
+    - webitel-app.service
+    - webitel-dsa.service
+    - webitel-uac.service
