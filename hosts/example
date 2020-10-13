@@ -1,5 +1,5 @@
 [main]
-cloud.webitel.ua consul_iface=ens192 consul_node_role=server
+cloud.webitel.ua
 
 [all:children]
 main

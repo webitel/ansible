@@ -15,6 +15,7 @@
     - include: tasks/rtpengine.yml
     - include: tasks/opensips.yml
     - include: tasks/webitel.yml
+    - include: tasks/nginx.yml
 
   handlers:
     - include: handlers/main.yml

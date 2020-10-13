@@ -51,6 +51,11 @@
     name: fail2ban
     state: restarted
 
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+
 - name: restart webitel
   service:
     name: '{{ item }}'
@@ -60,3 +65,7 @@
     - webitel-app.service
     - webitel-dsa.service
     - webitel-uac.service
+    - engine.service
+    - storage.service
+    - call_center.service
+    - flow_manager.service
