@@ -60,6 +60,7 @@
   systemd:
     name: consul
     enabled: yes
+  notify: restart consul
   when:
     - ansible_service_mgr == "systemd"
 
