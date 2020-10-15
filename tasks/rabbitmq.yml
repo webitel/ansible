@@ -66,6 +66,7 @@
   systemd:
     name: rabbitmq-server
     enabled: yes
+    state: started
   when:
     - ansible_service_mgr == "systemd"
 

@@ -58,6 +58,7 @@
   systemd:
     name: freeswitch
     enabled: yes
+    state: started
   when:
     - ansible_service_mgr == "systemd"
 
