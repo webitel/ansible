@@ -68,13 +68,6 @@
     remote_src: yes
   when: not bootstrap_state.stat.exists
 
-- name: Change SIP IP
-  replace:
-    path: /etc/default/webitel
-    regexp: '(1\.1\.1\.1)$'
-    replace: '{{ hostvars[inventory_hostname]["ansible_default_ipv4"]["address"] }}'
-  when: not bootstrap_state.stat.exists
-
 - name: Copy webitel systemd files
   copy:
     src: '/opt/webitel/etc/systemd/system/{{ item }}'
@@ -93,6 +86,17 @@
     - ansible_service_mgr == "systemd"
     - not bootstrap_state.stat.exists
 
+- name: Change SIP IP
+  replace:
+    path: '{{ item }}'
+    regexp: '(1\.1\.1\.1)'
+    replace: '{{ hostvars[inventory_hostname]["ansible_default_ipv4"]["address"] }}'
+  with_items:
+    - /etc/default/webitel
+    - /etc/systemd/system/engine.service
+  register: systemd_unit
+  when: not bootstrap_state.stat.exists
+
 - name: Enable webitel at startup (systemd)
   systemd:
     name: '{{ item }}'
@@ -109,6 +113,12 @@
   when:
     - ansible_service_mgr == "systemd"
     - not bootstrap_state.stat.exists
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+  notify: restart webitel
+  when: systemd_unit is changed
 
 - name: Create bootstrapped state file
   file:
