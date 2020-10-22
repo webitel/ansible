@@ -16,6 +16,7 @@
     - include: tasks/opensips.yml
     - include: tasks/webitel.yml
     - include: tasks/nginx.yml
+    - include: tasks/letsencrypt.yml
 
   handlers:
     - include: handlers/main.yml
