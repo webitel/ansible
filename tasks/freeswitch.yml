@@ -17,6 +17,14 @@
     install_recommends: no
     update_cache: yes
 
+- name: Create cache directory
+  file:
+    dest: /var/cache/freeswitch
+    state: directory
+    owner: freeswitch
+    group: freeswitch
+    mode: 0660
+
 - name: Read bootstrapped state
   stat:
     path: /etc/freeswitch/.bootstrap
