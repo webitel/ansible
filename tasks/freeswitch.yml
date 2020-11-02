@@ -23,7 +23,7 @@
     state: directory
     owner: freeswitch
     group: freeswitch
-    mode: 0660
+    mode: 0777
 
 - name: Read bootstrapped state
   stat:
