@@ -21,7 +21,7 @@
 
 - name: Download & install webitel extension for PostgreSQL
   unarchive:
-    src: https://releases.webitel.com/libs/wbt_cc_PSQL-{{ psql_version.stdout }}-{{ hostvars[inventory_hostname].ansible_distribution | lower }}_amd64.tgz
+    src: https://releases.webitel.com/{{ webitel_ver }}/wbt_cc_PSQL-{{ psql_version.stdout }}-{{ hostvars[inventory_hostname].ansible_distribution | lower }}_amd64.tgz
     dest: /
     remote_src: yes
   register: systemd_unit

@@ -33,7 +33,7 @@
 
 - name: Install webitel binary
   unarchive:
-    src: 'https://releases.webitel.com/builds/{{ item }}-linux_amd64.zip'
+    src: 'https://releases.webitel.com/{{ webitel_ver }}/{{ item }}-linux_amd64.zip'
     dest: '/usr/local/bin/'
     exclude: 'i18n/*'
     remote_src: yes
@@ -46,7 +46,7 @@
 
 - name: Install webitel binary i18n
   unarchive:
-    src: 'https://releases.webitel.com/builds/{{ item }}-linux_amd64.zip'
+    src: 'https://releases.webitel.com/{{ webitel_ver }}/{{ item }}-linux_amd64.zip'
     dest: '/usr/share/webitel/{{ item }}'
     exclude: '{{ item }}'
     remote_src: yes

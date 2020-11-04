@@ -1,4 +1,8 @@
 ---
+# Webitel
+
+webitel_ver: builds
+
 # Consul
 consul_mode: single
 consul_systemd_restart_sec: 30
@@ -9,8 +13,8 @@ opensips_fail2ban: false
 
 # nginx
 nginx_letsencrypt: false
-nginx_site_name: site.webitel.lo
-nginx_mail_address: postmaster@webitel.lo
+nginx_site_name: cloud.webitel.lo
+nginx_mail_address: cloud@webitel.lo
 
 # Generate additional locales
 locales_gen:

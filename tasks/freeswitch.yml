@@ -34,12 +34,12 @@
 
 - name: Install Webitel modules for FreeSWITCH
   unarchive:
-    src: "https://releases.webitel.com/libs/{{ item }}"
+    src: "https://releases.webitel.com/{{ webitel_ver }}/{{ item }}"
     dest: /usr/lib/freeswitch/mod/
     remote_src: yes
   notify: restart FreeSWITCH
   with_items:
-    - mod_grpc-FS-1.10.3-release.zip
+    - mod_grpc-FS-1.10.5-release.zip
     - mod_amd-amqp-FS-1.10-release.zip
 
 - name: Download FreeSWITCH configure
