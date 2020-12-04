@@ -55,6 +55,7 @@ freeswitch:
   - freeswitch-mod-imagick
   - freeswitch-mod-png
   - freeswitch-mod-native-file
+  - freeswitch-mod-logfile
   - freeswitch-mod-local-stream
   - freeswitch-mod-tone-stream
   - freeswitch-mod-lua
