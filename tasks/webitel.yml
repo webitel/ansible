@@ -31,6 +31,10 @@
     - /opt/storage/recordings
   when: not bootstrap_state.stat.exists
 
+- name: generate storage certificate
+  command: openssl genrsa -out /opt/storage/key.pem 512
+  when: not bootstrap_state.stat.exists
+
 - name: Install webitel binary
   unarchive:
     src: 'https://releases.webitel.com/{{ webitel_ver }}/{{ item }}-linux_amd64.zip'
@@ -43,6 +47,8 @@
     - storage
     - call_center
     - flow_manager
+    - chat_manager
+    - chatbot_manager
 
 - name: Install webitel binary i18n
   unarchive:
@@ -82,6 +88,8 @@
     - storage.service
     - call_center.service
     - flow_manager.service
+    - chat_manager.service
+    - chatbot_manager.service
   when:
     - ansible_service_mgr == "systemd"
     - not bootstrap_state.stat.exists
@@ -110,6 +118,8 @@
     - storage.service
     - call_center.service
     - flow_manager.service
+    - chat_manager.service
+    - chatbot_manager.service
   when:
     - ansible_service_mgr == "systemd"
     - not bootstrap_state.stat.exists
