@@ -102,8 +102,19 @@
   with_items:
     - /etc/default/webitel
     - /etc/systemd/system/engine.service
+    - /etc/systemd/system/chatbot_manager.service
   register: systemd_unit
   when: not bootstrap_state.stat.exists
+
+- name: URL for letsencrypt
+  replace:
+    path: '/etc/systemd/system/chatbot_manager.service'
+    after: '--site_url="'
+    before: '/chat"'
+    regexp: '^(.+)$'
+    replace: 'https://{{ nginx_site_name }}'
+  register: systemd_unit
+  when: nginx_letsencrypt | bool
 
 - name: Enable webitel at startup (systemd)
   systemd:
