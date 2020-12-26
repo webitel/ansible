@@ -6,7 +6,7 @@
 
 - name: Add rtpengine repository into sources list
   apt_repository:
-    repo:  deb http://deb.webitel.com/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    repo: deb http://deb.webitel.com/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} main
     state: present
     filename: rtpengine
 

@@ -11,6 +11,9 @@ consul_systemd_limit_nofile: 65536
 # OpenSIPS
 opensips_fail2ban: false
 
+# Grafana
+grafana: false
+
 # nginx
 nginx_letsencrypt: false
 nginx_site_name: cloud.webitel.lo
