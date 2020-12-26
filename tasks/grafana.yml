@@ -21,6 +21,13 @@
     update_cache: yes
   when: grafana | bool
 
+- name: Change grafana URL
+  lineinfile:
+    path: /etc/grafana/grafana.ini
+    regexp: '^;root_url ='
+    line: 'root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/'
+  when: grafana | bool
+
 - name: Enable grafana at startup (systemd)
   systemd:
     name: grafana-server
