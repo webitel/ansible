@@ -12,7 +12,7 @@
     filename: grafana
   when: grafana | bool
 
-- name: Update repositories cache and install rtpengine packages
+- name: Update repositories cache and install grafana packages
   apt:
     pkg:
       - grafana
