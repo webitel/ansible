@@ -70,7 +70,6 @@ freeswitch:
 
 opensips:
   - opensips
-  - opensips-cli
   - opensips-http-modules
   - opensips-postgres-module
   - opensips-presence-modules

@@ -11,12 +11,6 @@
     state: present
     filename: opensips
 
-- name: Add OpenSIPS-cli repository into sources list
-  apt_repository:
-    repo:  deb https://apt.opensips.org {{ hostvars[inventory_hostname].ansible_distribution_release }} cli-releases
-    state: present
-    filename: opensips-cli
-
 - name: Update repositories cache and install OpenSIPS packages
   apt:
     name: '{{ opensips }}'
