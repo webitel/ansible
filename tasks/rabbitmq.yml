@@ -9,13 +9,13 @@
 
 - name: Add rabbitmq repository into sources list
   apt_repository:
-      repo: deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    repo: deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} main
     state: present
     filename: rabbitmq
 
 - name: Add rabbitmq-erlang repository into sources list
   apt_repository:
-      repo: deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    repo: deb https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} main
     state: present
     filename: rabbitmq-erlang
 
