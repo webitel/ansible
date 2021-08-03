@@ -7,7 +7,7 @@
 
 - name: Add OpenSIPS repository into sources list
   apt_repository:
-    repo:  deb https://apt.opensips.org {{ hostvars[inventory_hostname].ansible_distribution_release }} 3.1-releases
+    repo:  deb https://apt.opensips.org {{ hostvars[inventory_hostname].ansible_distribution_release }} 3.2-releases
     state: present
     filename: opensips
 
