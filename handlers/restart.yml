@@ -63,7 +63,6 @@
   with_items:
     - webitel-api.service
     - webitel-app.service
-    - webitel-dsa.service
     - webitel-uac.service
     - engine.service
     - storage.service
