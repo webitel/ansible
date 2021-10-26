@@ -10,9 +10,22 @@
     state: present
     filename: postgresql
 
-- name: Update repositories cache and install "postgresql-12" package
+- name: Add TimescaleDB apt-key
+  apt_key:
+    url: https://packagecloud.io/timescale/timescaledb/gpgkey
+    state: present
+
+- name: Add TimescaleDB repository into sources list
+  apt_repository:
+    repo: deb https://packagecloud.io/timescale/timescaledb/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    state: present
+    filename: timescaledb
+
+- name: Update repositories cache and install postgresql and timescaledb packages
   apt:
-    name: postgresql-12
+    pkg:
+      - postgresql-12
+      - timescaledb-postgresql-12
     update_cache: yes
 
 - name: get PostgreSQL version
