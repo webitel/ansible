@@ -28,9 +28,13 @@
       - timescaledb-postgresql-12
     update_cache: yes
 
-- name: timescaledb-tune
+- name: Execute timescaledb-tune
   shell: timescaledb-tune --quiet --yes
-  notify: restart postgresql
+
+- name: Restart PostgreSQL on Linux
+  service:
+    name: postgresql
+    state: restarted
 
 - name: get PostgreSQL version
   shell: psql --version | cut -f 3 -d " "
