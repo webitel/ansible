@@ -39,8 +39,9 @@
     remote_src: yes
   notify: restart FreeSWITCH
   with_items:
-    - mod_grpc-FS-1.10.5-release.zip
+    - mod_grpc-FS-1.10.7-release.zip
     - mod_amd-amqp-FS-1.10-release.zip
+    - mod_google_transcribe-FS-1.10.7-release.zip
 
 - name: Download FreeSWITCH configure
   get_url:
