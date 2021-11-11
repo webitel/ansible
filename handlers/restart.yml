@@ -15,7 +15,6 @@
   service:
     name: postgresql
     state: restarted
-  notify: restart FreeSWITCH
   listen: 'restart postgresql'
 
 - name: restart rabbitmq-server on Linux

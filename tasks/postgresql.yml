@@ -28,6 +28,10 @@
       - timescaledb-postgresql-12
     update_cache: yes
 
+- name: timescaledb-tune
+  shell: timescaledb-tune --quiet --yes
+  notify: restart postgresql
+
 - name: get PostgreSQL version
   shell: psql --version | cut -f 3 -d " "
   register: psql_version
