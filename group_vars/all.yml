@@ -40,6 +40,7 @@ freeswitch:
   - freeswitch
   - freeswitch-mod-av
   - freeswitch-mod-opus
+  - freeswitch-mod-opusfile
   - freeswitch-mod-sndfile
   - freeswitch-mod-shout
   - freeswitch-mod-sofia
