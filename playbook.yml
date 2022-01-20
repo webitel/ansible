@@ -10,11 +10,11 @@
     - include: tasks/setup.yml
     - include: tasks/consul.yml
     - include: tasks/rabbitmq.yml
-    - include: tasks/postgresql.yml
-    - include: tasks/freeswitch.yml
+    - include: tasks/{{ webitel_ver }}_postgresql.yml
+    - include: tasks/{{ webitel_ver }}_freeswitch.yml
     - include: tasks/rtpengine.yml
     - include: tasks/opensips.yml
-    - include: tasks/webitel.yml
+    - include: tasks/{{ webitel_ver }}_webitel.yml
     - include: tasks/grafana.yml
     - include: tasks/nginx.yml
     - include: tasks/letsencrypt.yml

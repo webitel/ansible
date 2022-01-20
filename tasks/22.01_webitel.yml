@@ -1,0 +1,148 @@
+---
+- name: Update repositories cache and install "git" package
+  apt:
+    name: git
+    update_cache: yes
+
+- name: Read bootstrapped state
+  stat:
+    path: /var/run/webitel/.bootstrap
+  register: bootstrap_state
+  ignore_errors: true
+  tags: always
+
+- name: Clone webitel files
+  git:
+    repo: 'https://git.webitel.com/scm/wep/webitel.git'
+    dest: /opt/webitel
+    version: "{{ webitel_ver }}"
+  when: not bootstrap_state.stat.exists
+
+- name: Create webitel directories
+  file:
+    dest: '{{ item }}'
+    state: directory
+  with_items:
+    - /var/run/webitel
+    - /usr/share/webitel
+    - /usr/share/webitel/engine
+    - /usr/share/webitel/storage
+    - /opt/storage
+    - /opt/storage/data
+    - /opt/storage/recordings
+  when: not bootstrap_state.stat.exists
+
+- name: generate storage certificate
+  command: openssl genrsa -out /opt/storage/key.pem 512
+  when: not bootstrap_state.stat.exists
+
+- name: Install webitel binary
+  unarchive:
+    src: 'https://releases.webitel.com/{{ webitel_ver }}/{{ item }}-linux_amd64.zip'
+    dest: '/usr/local/bin/'
+    exclude: 'i18n/*'
+    remote_src: yes
+  with_items:
+    - webitel
+    - engine
+    - storage
+    - call_center
+    - flow_manager
+    - chat_manager
+    - chatbot_manager
+
+- name: Install webitel binary i18n
+  unarchive:
+    src: 'https://releases.webitel.com/{{ webitel_ver }}/{{ item }}-linux_amd64.zip'
+    dest: '/usr/share/webitel/{{ item }}'
+    exclude: '{{ item }}'
+    remote_src: yes
+  with_items:
+    - engine
+    - storage
+
+- name: Copy files
+  copy:
+    src: /opt/webitel/webitel/
+    dest: /var/lib/webitel/
+    remote_src: yes
+  when: not bootstrap_state.stat.exists
+
+- name: Copy default etc file
+  copy:
+    src: /opt/webitel/etc/default/webitel
+    dest: /etc/default/webitel
+    remote_src: yes
+  when: not bootstrap_state.stat.exists
+
+- name: Copy webitel systemd files
+  copy:
+    src: '/opt/webitel/etc/systemd/system/{{ item }}'
+    dest: /etc/systemd/system/
+    remote_src: yes
+  with_items:
+    - webitel-api.service
+    - webitel-app.service
+    - webitel-uac.service
+    - engine.service
+    - storage.service
+    - call_center.service
+    - flow_manager.service
+    - chat_manager.service
+    - chatbot_manager.service
+  when:
+    - ansible_service_mgr == "systemd"
+    - not bootstrap_state.stat.exists
+
+- name: Change SIP IP
+  replace:
+    path: '{{ item }}'
+    regexp: '(1\.1\.1\.1)'
+    replace: '{{ hostvars[inventory_hostname]["ansible_default_ipv4"]["address"] }}'
+  with_items:
+    - /etc/default/webitel
+    - /etc/systemd/system/engine.service
+    - /etc/systemd/system/chatbot_manager.service
+  register: systemd_unit
+  when: not bootstrap_state.stat.exists
+
+- name: URL for letsencrypt
+  replace:
+    path: '/etc/systemd/system/chatbot_manager.service'
+    after: '--site_url="'
+    before: '/chat"'
+    regexp: '^(.+)$'
+    replace: 'https://{{ nginx_site_name }}'
+  register: systemd_unit
+  when: nginx_letsencrypt | bool
+
+- name: Enable webitel at startup (systemd)
+  systemd:
+    name: '{{ item }}'
+    enabled: yes
+  with_items:
+    - webitel-api.service
+    - webitel-app.service
+    - webitel-uac.service
+    - engine.service
+    - storage.service
+    - call_center.service
+    - flow_manager.service
+    - chat_manager.service
+    - chatbot_manager.service
+  when:
+    - ansible_service_mgr == "systemd"
+    - not bootstrap_state.stat.exists
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+  notify: restart webitel
+  when: systemd_unit is changed
+
+- name: Create bootstrapped state file
+  file:
+    dest: /var/run/webitel/.bootstrap
+    state: touch
+  notify: restart webitel
+  when: not bootstrap_state.stat.exists

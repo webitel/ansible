@@ -1,7 +1,8 @@
 ---
 # Webitel
 
-webitel_ver: builds
+# 22.01 or builds
+webitel_ver: 22.01
 
 # Consul
 consul_mode: single
@@ -33,41 +34,6 @@ software:
   - locales
   - dnsutils
   - python3-psycopg2
-
-freeswitch:
-  - imagemagick
-  - librabbitmq4
-  - freeswitch
-  - freeswitch-mod-av
-  - freeswitch-mod-opus
-  - freeswitch-mod-opusfile
-  - freeswitch-mod-sndfile
-  - freeswitch-mod-shout
-  - freeswitch-mod-sofia
-  - freeswitch-mod-dialplan-xml
-  - freeswitch-mod-valet-parking
-  - freeswitch-mod-conference
-  - freeswitch-mod-console
-  - freeswitch-mod-event-socket
-  - freeswitch-mod-loopback
-  - freeswitch-mod-commands
-  - freeswitch-mod-db
-  - freeswitch-mod-dptools
-  - freeswitch-mod-expr
-  - freeswitch-mod-hash
-  - freeswitch-mod-spandsp
-  - freeswitch-mod-imagick
-  - freeswitch-mod-png
-  - freeswitch-mod-native-file
-  - freeswitch-mod-logfile
-  - freeswitch-mod-local-stream
-  - freeswitch-mod-tone-stream
-  - freeswitch-mod-lua
-  - freeswitch-mod-http-cache
-  - freeswitch-mod-spy
-  - freeswitch-music-default
-  - freeswitch-mod-json-cdr
-  - freeswitch-systemd
 
 opensips:
   - opensips

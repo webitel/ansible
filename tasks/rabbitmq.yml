@@ -42,12 +42,6 @@
   ignore_errors: true
   tags: always
 
-- name: Download "rabbitmq_delayed_message_exchange"
-  get_url:
-    url: https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.8.0/rabbitmq_delayed_message_exchange-3.8.0.ez
-    dest: /usr/lib/rabbitmq/lib/rabbitmq_server-{{rabbitmq_version.stdout}}/plugins/rabbitmq_delayed_message_exchange-3.8.0.ez
-  notify: restart rabbitmq-server
-
 - name: Create rabbitmq-service directory
   file:
     dest: /etc/systemd/system/rabbitmq-server.service.d
