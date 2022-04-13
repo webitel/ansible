@@ -4,6 +4,7 @@
     name:
       - webitel-core
       - webitel-common
+      - webitel-engine
       - webitel-storage
       - webitel-flow-manager
       - webitel-chat-manager
