@@ -7,13 +7,13 @@
     dest: /usr/share/keyrings/signalwire-freeswitch-repo.gpg
 
 - name: Make apt auth directory
-  ansible.builtin.file:
+  file:
     path: /etc/apt/auth.conf.d
     state: directory
     mode: '0755'
 
 - name: Create apt auth.conf.d freeswitch file
-  ansible.builtin.copy:
+  copy:
     dest: /etc/apt/auth.conf.d/freeswitch.conf
     owner: root
     group: root
@@ -21,7 +21,7 @@
     content: 'machine freeswitch.signalwire.com login signalwire password {{ signalwire_freeswitch_key }}'
 
 - name: Add SignalWire FreeSWITCH repo
-  ansible.builtin.apt_repository:
+  apt_repository:
     repo: deb [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ {{  hostvars[inventory_hostname].ansible_distribution_release }} main
     state: present
     filename: freeswitch

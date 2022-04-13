@@ -1,5 +1,5 @@
 ---
-- name: Install webitel software with APT'
+- name: Install webitel software with APT
   apt:
     name:
       - webitel-core

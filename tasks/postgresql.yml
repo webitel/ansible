@@ -64,9 +64,9 @@
   register: create_db
   become_user: postgres
 
-- name: Download latest "webitel" files
+- name: Download database schema
   get_url:
-    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}"
+    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}?at=refs%2Ftags%2F{{ webitel_ver }}"
     dest: /tmp/{{ item }}
     mode: 0777
   become_user: postgres

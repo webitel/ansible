@@ -3,7 +3,7 @@
 webitel_ver: 22.03
 
 # FreeSWITCH
-signalwire_freeeswitch_key: pat_XXXXX
+signalwire_freeswitch_key: pat_XXXXX
 
 # Consul
 consul_mode: single

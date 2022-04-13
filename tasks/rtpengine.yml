@@ -1,15 +1,4 @@
 ---
-- name: Add rtpengine apt-key
-  apt_key:
-    url: http://deb.webitel.com/archive.key
-    state: present
-
-- name: Add rtpengine repository into sources list
-  apt_repository:
-    repo: deb http://deb.webitel.com/debian {{ hostvars[inventory_hostname].ansible_distribution_release }} main
-    state: present
-    filename: rtpengine
-
 - name: get kernel version
   shell: uname -r
   register: kernel_version
