@@ -1,8 +1,17 @@
 ---
-- name: Update repositories cache and install "git" package
+- name: Install webitel software with APT'
   apt:
-    name: git
+    name:
+      - webitel-core
+      - webitel-common
+      - webitel-storage
+      - webitel-flow-manager
+      - webitel-chat-manager
+      - webitel-call-center
+    state: latest
     update_cache: yes
+    install_recommends: no
+  when: ansible_distribution == 'Debian'
 
 - name: Read bootstrapped state
   stat:
@@ -10,62 +19,6 @@
   register: bootstrap_state
   ignore_errors: true
   tags: always
-
-- name: Clone webitel latest files
-  git:
-    repo: 'https://git.webitel.com/scm/wep/webitel.git'
-    dest: /opt/webitel
-  when: not bootstrap_state.stat.exists
-
-- name: Create webitel directories
-  file:
-    dest: '{{ item }}'
-    state: directory
-  with_items:
-    - /var/run/webitel
-    - /usr/share/webitel
-    - /usr/share/webitel/engine
-    - /usr/share/webitel/storage
-    - /opt/storage
-    - /opt/storage/data
-    - /opt/storage/recordings
-  when: not bootstrap_state.stat.exists
-
-- name: generate storage certificate
-  command: openssl genrsa -out /opt/storage/key.pem 512
-  when: not bootstrap_state.stat.exists
-
-- name: Install webitel binary
-  unarchive:
-    src: 'https://releases.webitel.com/builds/{{ item }}-linux_amd64.zip'
-    dest: '/usr/local/bin/'
-    exclude: 'i18n/*'
-    remote_src: yes
-  with_items:
-    - webitel
-    - engine
-    - storage
-    - call_center
-    - flow_manager
-    - chat_manager
-    - chatbot_manager
-
-- name: Install webitel binary i18n
-  unarchive:
-    src: 'https://releases.webitel.com/builds/{{ item }}-linux_amd64.zip'
-    dest: '/usr/share/webitel/{{ item }}'
-    exclude: '{{ item }}'
-    remote_src: yes
-  with_items:
-    - engine
-    - storage
-
-- name: Copy files
-  copy:
-    src: /opt/webitel/webitel/
-    dest: /var/lib/webitel/
-    remote_src: yes
-  when: not bootstrap_state.stat.exists
 
 - name: Copy default etc file
   copy:

@@ -21,10 +21,11 @@
     state: present
     filename: timescaledb
 
-- name: Update repositories cache and install PostgreSQL 12.9 and timescaledb packages
+- name: Update repositories cache and install PostgreSQL 12 and timescaledb packages
   apt:
     pkg:
-      - postgresql-12=12.9-1.pgdg100+1
+      - postgresql-12
+      - webitel-postgresql-12
       - timescaledb-postgresql-12
     update_cache: yes
 
@@ -35,17 +36,6 @@
   service:
     name: postgresql
     state: restarted
-
-- name: get PostgreSQL version
-  shell: psql --version | cut -f 3 -d " "
-  register: psql_version
-
-- name: Download & install webitel extension for PostgreSQL
-  unarchive:
-    src: https://releases.webitel.com/{{ webitel_ver }}/wbt_cc_PSQL-{{ psql_version.stdout }}-{{ hostvars[inventory_hostname].ansible_distribution | lower }}_amd64.tgz
-    dest: /
-    remote_src: yes
-  register: systemd_unit
 
 - name: Enable PostgreSQL at startup (systemd)
   systemd:
@@ -74,9 +64,9 @@
   register: create_db
   become_user: postgres
 
-- name: Download "webitel" files
+- name: Download latest "webitel" files
   get_url:
-    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}?at=refs%2Ftags%2F{{ webitel_ver }}"
+    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}"
     dest: /tmp/{{ item }}
     mode: 0777
   become_user: postgres
@@ -106,3 +96,20 @@
     - /tmp/webitel-db-schema.sql
     - /tmp/webitel-db-data.sql
   when: create_db is changed
+
+- name: Download pgsql vacuum script
+  get_url:
+    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/cc_vacuum.sql"
+    dest: "/var/lib/postgresql/cc_vacuum.sql"
+    mode: 0777
+  become_user: postgres
+
+- name: Creates a cron file under /etc/cron.d
+  ansible.builtin.cron:
+    name: psql cc_vacuum
+    minute: "4"
+    hour: "4"
+    user: postgres
+    job: "psql webitel < ~/cc_vacuum.sql"
+    cron_file: ansible_psql-cc_vacuum
+

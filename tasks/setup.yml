@@ -1,7 +1,26 @@
 ---
 # Common roles for all hosts
+- name: Fetch Webitel GPG key
+  get_url:
+    url: http://deb.webitel.com/archive.key
+    dest: /usr/share/keyrings/webitel-repo.gpg
+  when: ansible_distribution == 'Debian'
 
-- name: 'Updates apt cache & upgrades dist'
+- name: Add Webitel repo
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/webitel-repo.gpg] http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    state: present
+    filename: webitel
+  when: ansible_distribution == 'Debian'
+
+- name: Add Webitel releases repo
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/webitel-repo.gpg] http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} {{ webitel_ver }}-releases
+    state: present
+    filename: webitel
+  when: ansible_distribution == 'Debian'
+
+- name: Updates apt cache & upgrades dist
   apt:
     upgrade: 'yes'
     update_cache: 'yes'
@@ -9,8 +28,18 @@
 
 - name: 'Install all necessary software with APT'
   apt:
-    name: '{{ software }}'
+    name:
+      - acl
+      - curl
+      - wget
+      - unzip
+      - gnupg
+      - locales
+      - dnsutils
+      - python3-psycopg2
     state: latest
+    update_cache: yes
+    install_recommends: no
   when: ansible_distribution == 'Debian'
 
 - locale_gen:

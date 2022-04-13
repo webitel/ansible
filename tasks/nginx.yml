@@ -1,7 +1,9 @@
 ---
 - name: Update repositories cache and install "nginx" package
   apt:
-    name: nginx
+    name:
+      - nginx
+      - webitel-www
     update_cache: yes
 
 - name: Read bootstrapped state
@@ -11,19 +13,16 @@
   ignore_errors: true
   tags: always
 
-- name: Download "nginx config"
+- name: Download nginx.conf"
   get_url:
-    url: https://git.webitel.com/projects/WEP/repos/nginx/raw/default
-    dest: /etc/nginx/sites-enabled/default
+    url: "https://git.webitel.com/projects/WEP/repos/nginx/raw/nginx.conf"
+    dest: "/etc/nginx/nginx.conf"
   when: not bootstrap_state.stat.exists
 
-- name: Unarchive site files
-  unarchive:
-    src: https://releases.webitel.com/builds/www.zip
-    dest: /opt/
-    remote_src: yes
-    owner: www-data
-    group: www-data
+- name: Download nginx site"
+  get_url:
+    url: "https://git.webitel.com/projects/WEP/repos/nginx/raw/default"
+    dest: "/etc/nginx/sites-enabled/default"
   when: not bootstrap_state.stat.exists
 
 - name: Enable nginx at startup (systemd)

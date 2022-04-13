@@ -1,12 +1,28 @@
 ---
-- name: Add FreeSWITCH apt-key
-  apt_key:
-    url: https://files.freeswitch.org/repo/deb/debian-release/fsstretch-archive-keyring.asc
-    state: present
+- name: Fetch password protected FreeSWITCH GPG key
+  get_url:
+    url: https://freeswitch.signalwire.com/repo/deb/debian-release/signalwire-freeswitch-repo.gpg
+    username: signalwire
+    password: '{{ signalwire_freeswitch_key }}'
+    dest: /usr/share/keyrings/signalwire-freeswitch-repo.gpg
 
-- name: Add FreeSWITCH repository into sources list
-  apt_repository:
-    repo:  deb http://files.freeswitch.org/repo/deb/debian-release/ {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+- name: Make apt auth directory
+  ansible.builtin.file:
+    path: /etc/apt/auth.conf.d
+    state: directory
+    mode: '0755'
+
+- name: Create apt auth.conf.d freeswitch file
+  ansible.builtin.copy:
+    dest: /etc/apt/auth.conf.d/freeswitch.conf
+    owner: root
+    group: root
+    mode: '0700'
+    content: 'machine freeswitch.signalwire.com login signalwire password {{ signalwire_freeswitch_key }}'
+
+- name: Add SignalWire FreeSWITCH repo
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/signalwire-freeswitch-repo.gpg] https://freeswitch.signalwire.com/repo/deb/debian-release/ {{  hostvars[inventory_hostname].ansible_distribution_release }} main
     state: present
     filename: freeswitch
 
@@ -46,6 +62,10 @@
       - freeswitch-systemd
       - librabbitmq4
       - imagemagick
+      - freeswitch-mod-amd
+      - freeswitch-mod-amqp
+      - freeswitch-mod-grpc
+      - freeswitch-mod-google-transcribe
     state: latest
     update_cache: yes
     install_recommends: no
@@ -64,18 +84,6 @@
   register: bootstrap_state
   ignore_errors: true
   tags: always
-
-- name: Install Webitel modules for FreeSWITCH
-  unarchive:
-    src: "https://releases.webitel.com/{{ webitel_ver }}/{{ item }}"
-    dest: /usr/lib/freeswitch/mod/
-    remote_src: yes
-  notify: restart FreeSWITCH
-  with_items:
-    - mod_amd-FS-1.10.7-release.zip
-    - mod_amqp-FS-1.10.7-release.zip
-    - mod_grpc-FS-1.10.7-release.zip
-    - mod_google_transcribe-FS-1.10.7-release.zip
 
 - name: Download FreeSWITCH configure
   get_url:

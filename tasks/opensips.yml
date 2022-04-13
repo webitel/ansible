@@ -13,7 +13,16 @@
 
 - name: Update repositories cache and install OpenSIPS packages
   apt:
-    name: '{{ opensips }}'
+    name:
+      - opensips
+      - opensips-http-modules
+      - opensips-postgres-module
+      - opensips-presence-modules
+      - opensips-rabbitmq-modules
+      - opensips-wss-module
+      - opensips-tls-module
+      - opensips-tlsmgm-module
+      - opensips-xmlrpc-module
     state: latest
     install_recommends: no
     update_cache: yes
