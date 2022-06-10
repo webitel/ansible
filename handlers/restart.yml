@@ -67,5 +67,5 @@
     - storage.service
     - call_center.service
     - flow_manager.service
-    - chat_manager.service
-    - chatbot_manager.service
+    - messages-srv.service
+    - messages-bot.service
