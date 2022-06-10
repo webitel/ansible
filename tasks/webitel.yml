@@ -6,8 +6,8 @@
       - webitel-common
       - webitel-engine
       - webitel-storage
+      - webitel-messages
       - webitel-flow-manager
-      - webitel-chat-manager
       - webitel-call-center
     state: latest
     update_cache: yes
@@ -41,8 +41,8 @@
     - storage.service
     - call_center.service
     - flow_manager.service
-    - chat_manager.service
-    - chatbot_manager.service
+    - messages-bot.service
+    - messages-srv.service
   when:
     - ansible_service_mgr == "systemd"
     - not bootstrap_state.stat.exists
@@ -55,13 +55,13 @@
   with_items:
     - /etc/default/webitel
     - /etc/systemd/system/engine.service
-    - /etc/systemd/system/chatbot_manager.service
+    - /etc/systemd/system/messages-bot.service
   register: systemd_unit
   when: not bootstrap_state.stat.exists
 
 - name: URL for letsencrypt
   replace:
-    path: '/etc/systemd/system/chatbot_manager.service'
+    path: '/etc/systemd/system/messages-bot.service'
     after: '--site_url="'
     before: '/chat"'
     regexp: '^(.+)$'
@@ -81,8 +81,8 @@
     - storage.service
     - call_center.service
     - flow_manager.service
-    - chat_manager.service
-    - chatbot_manager.service
+    - messages-srv.service
+    - messages-bot.service
   when:
     - ansible_service_mgr == "systemd"
     - not bootstrap_state.stat.exists
