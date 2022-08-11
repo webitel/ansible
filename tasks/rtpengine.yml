@@ -6,7 +6,7 @@
 - name: Update repositories cache and install rtpengine packages
   apt:
     pkg:
-      - libspandsp6
+      - libspandsp2
       - ngcp-rtpengine
       - linux-headers-{{ kernel_version.stdout }}
     state: latest

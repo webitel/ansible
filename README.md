@@ -1,24 +1,20 @@
-# Webitel v22.05
+# Webitel v22.07
 
-## Install Ansible 2.9+ on Debian 10
+## Install Ansible 2.10+ on Debian 11
 
 Check Debian version
 
 	lsb_release -d
-	Description:    Debian GNU/Linux 10 (buster)
+	Description:    Debian GNU/Linux 11 (bullseye)
 
 Install Ansible
 
-	apt install git gnupg sudo
-	echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu bionic main">/etc/apt/sources.list.d/ansible.list
-	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
-	apt update
-	apt install ansible
+	apt install git gnupg sudo ansible
 
 Check Ansible version:
 
 	ansible --version
-	ansible 2.9.27
+	ansible 2.10.8
 
 ## Run ansible playbook for webitel
 

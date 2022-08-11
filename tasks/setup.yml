@@ -18,6 +18,23 @@
     state: present
     filename: webitel
     update_cache: 'no'
+  when: webitel_ver != 'dev'
+
+- name: Add Webitel dev repo
+  apt_repository:
+    repo: deb http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} {{ webitel_ver }}
+    state: present
+    filename: webitel
+    update_cache: 'no'
+  when: webitel_ver == 'dev'
+
+- name: Add Webitel NEXT releases repo
+  apt_repository:
+    repo: deb http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} 22.07-releases
+    state: present
+    filename: webitel
+    update_cache: 'no'
+  when: webitel_ver == 'dev'
 
 - name: Updates apt cache & upgrades dist
   apt:

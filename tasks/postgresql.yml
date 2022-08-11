@@ -75,6 +75,20 @@
     - webitel-db-data.sql
   when:
     - create_db is changed
+    - webitel_ver != 'dev'
+
+- name: Download DEV database schema
+  get_url:
+    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/{{ item }}"
+    dest: /tmp/{{ item }}
+    mode: 0777
+  become_user: postgres
+  with_items:
+    - webitel-db-schema.sql
+    - webitel-db-data.sql
+  when:
+    - create_db is changed
+    - webitel_ver == 'dev'
 
 - name: Restore database "webitel" from the file
   postgresql_db:

@@ -69,6 +69,14 @@
   register: systemd_unit
   when: nginx_letsencrypt | bool
 
+- name: Storage URL for letsencrypt
+  replace:
+    path: '/etc/systemd/system/storage.service'
+    regexp: '^(example\.org)$'
+    replace: '{{ nginx_site_name }}'
+  register: systemd_unit
+  when: nginx_letsencrypt | bool
+
 - name: Enable webitel at startup (systemd)
   systemd:
     name: '{{ item }}'

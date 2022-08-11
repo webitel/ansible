@@ -13,13 +13,13 @@
   ignore_errors: true
   tags: always
 
-- name: Download nginx.conf"
+- name: Download nginx.conf
   get_url:
     url: "https://git.webitel.com/projects/WEP/repos/nginx/raw/nginx.conf"
     dest: "/etc/nginx/nginx.conf"
   when: not bootstrap_state.stat.exists
 
-- name: Download nginx site"
+- name: Download nginx site
   get_url:
     url: "https://git.webitel.com/projects/WEP/repos/nginx/raw/default"
     dest: "/etc/nginx/sites-enabled/default"

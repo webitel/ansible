@@ -1,6 +1,6 @@
 ---
 # Webitel
-webitel_ver: 22.05
+webitel_ver: 22.07
 
 # FreeSWITCH
 signalwire_freeswitch_key: pat_XXXXX
@@ -14,7 +14,7 @@ consul_systemd_limit_nofile: 65536
 opensips_fail2ban: false
 
 # Grafana
-grafana: false
+grafana: true
 
 # nginx
 nginx_letsencrypt: false
