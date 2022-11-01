@@ -49,13 +49,13 @@
 
 - name: Update repositories cache and install fail2ban packages
   apt:
-    pkg:
+    name:
       - rsyslog
       - fail2ban
     state: latest
     install_recommends: no
     update_cache: yes
-  when: opensips_fail2ban | bool
+  when: opensips_fail2ban
 
 - name: Change loglevel
   replace:
@@ -63,14 +63,14 @@
     regexp: '(LOG_LOCAL0)$'
     replace: 'LOG_LOCAL7'
   notify: restart opensips
-  when: opensips_fail2ban | bool
+  when: opensips_fail2ban
 
 - name: Change /etc/rsyslog.conf file
   lineinfile:
     path: /etc/rsyslog.conf
     line: local7.* /var/log/opensips.log
   notify: restart rsyslog
-  when: opensips_fail2ban | bool
+  when: opensips_fail2ban
 
 - name: Change jail.conf file
   blockinfile:
@@ -83,7 +83,7 @@
       logpath  = /var/log/opensips.log
       maxretry = 5
       bantime = 3600
-  when: opensips_fail2ban | bool
+  when: opensips_fail2ban
 
 - name: Create /var/log/opensips.log file
   file:
@@ -92,7 +92,7 @@
   notify:
     - restart logrotate
     - restart opensips
-  when: opensips_fail2ban | bool
+  when: opensips_fail2ban
 
 - name: Add Fail2Ban config
   template:
@@ -101,7 +101,7 @@
   notify:
     - restart logrotate
     - restart fail2ban
-  when: opensips_fail2ban | bool
+  when: opensips_fail2ban
 
 - name: Add logrotate config
   template:
@@ -109,7 +109,7 @@
     dest: /etc/logrotate.d/opensips
   notify:
     - restart logrotate
-  when: opensips_fail2ban | bool
+  when: opensips_fail2ban
 
 - name: Enable Fail2Ban at startup (systemd)
   systemd:
@@ -117,7 +117,7 @@
     enabled: yes
   when:
     - ansible_service_mgr == "systemd"
-    - opensips_fail2ban | bool
+    - opensips_fail2ban
 
 - name: Create bootstrapped state file
   file:

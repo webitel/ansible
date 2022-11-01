@@ -111,19 +111,19 @@
     - /tmp/webitel-db-data.sql
   when: create_db is changed
 
-- name: Download pgsql vacuum script
+- name: Download pgsql database_helper script
   get_url:
-    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/cc_vacuum.sql"
+    url: "https://git.webitel.com/projects/WEP/repos/postgres/raw/database_helper.sql"
     dest: "/var/lib/postgresql/cc_vacuum.sql"
     mode: 0777
   become_user: postgres
 
 - name: Creates a cron file under /etc/cron.d
   ansible.builtin.cron:
-    name: psql cc_vacuum
+    name: psql daily script
     minute: "4"
     hour: "4"
     user: postgres
-    job: "psql webitel < ~/cc_vacuum.sql"
-    cron_file: ansible_psql-cc_vacuum
+    job: "psql webitel < ~/database_helper.sql"
+    cron_file: ansible_psql-database_helper
 

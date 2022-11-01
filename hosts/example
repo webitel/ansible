@@ -1,5 +1,5 @@
 [main]
-1.1.1.1 ansible_ssh_user=srvadm ansible_ssh_port=45793
+192.168.122.52 ansible_ssh_user=user ansible_ssh_port=22
 
 [all:children]
 main

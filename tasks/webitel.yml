@@ -67,7 +67,7 @@
     regexp: '^(.+)$'
     replace: 'https://{{ nginx_site_name }}'
   register: systemd_unit
-  when: nginx_letsencrypt | bool
+  when: nginx_letsencrypt
 
 - name: Storage URL for letsencrypt
   replace:
@@ -75,7 +75,7 @@
     regexp: '^(example\.org)$'
     replace: '{{ nginx_site_name }}'
   register: systemd_unit
-  when: nginx_letsencrypt | bool
+  when: nginx_letsencrypt
 
 - name: Enable webitel at startup (systemd)
   systemd:
