@@ -1,4 +1,18 @@
 ---
+- name: Download ngcp-keyring-latest.deb
+  get_url:
+    url="https://deb.sipwise.com/spce/ngcp-keyring-latest.deb"
+    dest="/tmp/ngcp-keyring-latest.deb"
+
+- name: Install ngcp-keyring-latest.deb
+  apt: deb="/tmp/ngcp-keyring-latest.deb"
+
+- name: Add rtpengine repository into sources list
+  apt_repository:
+    repo: deb https://deb.sipwise.com/spce/mr10.5.3 {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    state: present
+    filename: rtpengine
+
 - name: get kernel version
   shell: uname -r
   register: kernel_version

@@ -1,5 +1,5 @@
 [main]
-192.168.122.52 ansible_ssh_user=user ansible_ssh_port=22
+192.168.122.88 ansible_ssh_user=user ansible_ssh_port=22
 
 [all:children]
 main
