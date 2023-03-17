@@ -19,7 +19,7 @@
     owner: root
     group: root
     mode: '0700'
-    content: 'machine http://deb.webitel.com login {{ webitel_repo_pass }} password {{ webitel_repo_pass }}'
+    content: 'machine http://deb.webitel.com login {{ webitel_repo_user }} password {{ webitel_repo_pass }}'
 
 - name: Add Webitel repo
   apt_repository:
