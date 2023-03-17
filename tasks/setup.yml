@@ -1,5 +1,57 @@
 ---
 # Common roles for all hosts
+- name: Fetch password protected Webitel GPG key
+  get_url:
+    url: http://deb.webitel.com/webitel-repo.gpg
+    username: '{{ webitel_repo_user }}'
+    password: '{{ webitel_repo_pass }}'
+    dest: /usr/share/keyrings/webitel-repo.gpg
+
+- name: Make apt auth directory
+  file:
+    path: /etc/apt/auth.conf.d
+    state: directory
+    mode: '0755'
+
+- name: Create apt auth.conf.d webitel file
+  copy:
+    dest: /etc/apt/auth.conf.d/webitel.conf
+    owner: root
+    group: root
+    mode: '0700'
+    content: 'machine http://deb.webitel.com login {{ webitel_repo_pass }} password {{ webitel_repo_pass }}'
+
+- name: Add Webitel repo
+  apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/webitel-repo.gpg] http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} main
+    state: present
+    filename: webitel
+    update_cache: 'no'
+
+- name: Add Webitel releases repo
+  apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/webitel-repo.gpg] http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} {{ webitel_ver }}-releases
+    state: present
+    filename: webitel
+    update_cache: 'no'
+  when: webitel_ver != 'dev'
+
+- name: Add Webitel dev repo
+  apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/webitel-repo.gpg] http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} {{ webitel_ver }}
+    state: present
+    filename: webitel
+    update_cache: 'no'
+  when: webitel_ver == 'dev'
+
+- name: Add Webitel NEXT releases repo
+  apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/webitel-repo.gpg] http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} 23.04-releases
+    state: present
+    filename: webitel
+    update_cache: 'no'
+  when: webitel_ver == 'dev'
+
 - name: Updates apt cache & upgrades dist
   apt:
     upgrade: 'yes'
@@ -19,42 +71,6 @@
     state: latest
     update_cache: yes
     install_recommends: no
-
-- name: Fetch Webitel GPG key
-  apt_key:
-    url: http://deb.webitel.com/archive.key
-    state: present
-
-- name: Add Webitel repo
-  apt_repository:
-    repo: deb http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} main
-    state: present
-    update_cache: 'no'
-    filename: webitel
-
-- name: Add Webitel releases repo
-  apt_repository:
-    repo: deb http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} {{ webitel_ver }}-releases
-    state: present
-    filename: webitel
-    update_cache: 'no'
-  when: webitel_ver != 'dev'
-
-- name: Add Webitel dev repo
-  apt_repository:
-    repo: deb http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} {{ webitel_ver }}
-    state: present
-    filename: webitel
-    update_cache: 'no'
-  when: webitel_ver == 'dev'
-
-- name: Add Webitel NEXT releases repo
-  apt_repository:
-    repo: deb http://deb.webitel.com/debian/ {{ hostvars[inventory_hostname].ansible_distribution_release }} 22.07-releases
-    state: present
-    filename: webitel
-    update_cache: 'no'
-  when: webitel_ver == 'dev'
 
 - locale_gen:
     name: '{{ item }}'

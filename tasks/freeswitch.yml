@@ -6,12 +6,6 @@
     password: '{{ signalwire_freeswitch_key }}'
     dest: /usr/share/keyrings/signalwire-freeswitch-repo.gpg
 
-- name: Make apt auth directory
-  file:
-    path: /etc/apt/auth.conf.d
-    state: directory
-    mode: '0755'
-
 - name: Create apt auth.conf.d freeswitch file
   copy:
     dest: /etc/apt/auth.conf.d/freeswitch.conf
