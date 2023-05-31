@@ -2,7 +2,7 @@
 # Webitel
 webitel_ver: 23.05
 webitel_repo_user: user
-webitel_repo_pass: password
+webitel_repo_pass: pass
 
 # FreeSWITCH
 signalwire_freeswitch_key: pat_XXXXX

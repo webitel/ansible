@@ -21,12 +21,12 @@
     state: present
     filename: timescaledb
 
-- name: Update repositories cache and install PostgreSQL 14 and timescaledb packages
+- name: Update repositories cache and install PostgreSQL 15 and timescaledb packages
   apt:
     pkg:
-      - postgresql-14
-      - webitel-postgresql-14
-      - timescaledb-2-postgresql-14
+      - postgresql-15
+      - webitel-postgresql-15
+      - timescaledb-2-postgresql-15
     update_cache: yes
 
 - name: Execute timescaledb-tune
