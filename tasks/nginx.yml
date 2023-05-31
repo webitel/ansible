@@ -3,7 +3,13 @@
   apt:
     name:
       - nginx
-      - webitel-www
+      - webitel-auth-app
+      - webitel-admin-app
+      - webitel-agent-workspace
+      - webitel-supervisor-workspace
+      - webitel-flow-diagram
+      - webitel-history
+      - webitel-audit-app
     update_cache: yes
 
 - name: Read bootstrapped state
