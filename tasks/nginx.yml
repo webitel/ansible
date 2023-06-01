@@ -10,6 +10,7 @@
       - webitel-flow-diagram
       - webitel-history
       - webitel-audit-app
+      - webitel-web-widget
     update_cache: yes
 
 - name: Read bootstrapped state
