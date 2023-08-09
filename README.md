@@ -16,6 +16,10 @@ Check Ansible version:
 	ansible --version
 	ansible 2.10.8
 
+## Settings
+
+Plase, change your webitel and Freeswitch repository passwords inside the [all.yml](group_vars/all.yml).
+
 ## Run ansible playbook for webitel
 
 Install Webitel:
